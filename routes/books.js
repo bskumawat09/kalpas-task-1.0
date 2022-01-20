@@ -6,6 +6,7 @@ const {
 	editBook,
 	deleteBook,
 } = require("../controllers/books");
+const { isAuthentic } = require("../middlewares");
 
 const router = express.Router();
 
@@ -13,10 +14,10 @@ router.get("/", getAllBooks);
 
 router.get("/:id", getSingleBook);
 
-router.post("/", addBook);
+router.post("/", isAuthentic, addBook);
 
-router.put("/:id", editBook);
+router.put("/:id", isAuthentic, editBook);
 
-router.delete("/:id", deleteBook);
+router.delete("/:id", isAuthentic, deleteBook);
 
 module.exports = router;

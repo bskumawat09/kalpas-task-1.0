@@ -1,42 +1,58 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const multer = require("multer");
 const { uploadCsv } = require("./controllers/upload-csv");
 const bookRoutes = require("./routes/books");
+const authRoutes = require("./routes/auth");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const passport = require("passport");
+require("dotenv").config();
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
-const dbUrl = "mongodb://localhost:27017/book_csv";
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// express session setup
 const sessionStore = MongoStore.create({
-	mongoUrl: dbUrl,
+	mongoUrl: process.env.DB_STRING,
 	collectionName: "sessions",
 });
 
-// middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(
 	session({
 		store: sessionStore,
-		secret: "thisismytopsecret",
+		secret: process.env.SECRET,
 		resave: false,
 		saveUninitialized: true,
 		cookie: { maxAge: 24 * 60 * 60 * 1000 },
 	})
 );
 
+// passport setup
+require("./config/passport");
+app.use(passport.initialize());
+app.use(passport.session());
+
+// for debuging
+app.use((req, res, next) => {
+	console.log("req.user", req.user);
+	console.log(req.session);
+	next();
+});
+
+// routes
 app.use("/books", bookRoutes);
+app.use("/auth", authRoutes);
 app.post("/upload-csv", upload.single("book-csv"), uploadCsv);
 
-// home resource
+// home route
 app.get("/", (req, res) => {
 	res.send("Welcome to Book-CSV API Task");
 });
 
-// for all the other invalid routes
+// for invalid routes
 app.all("*", (req, res, next) => {
 	next(new Error("resource not found"));
 });
@@ -51,20 +67,7 @@ app.use((err, req, res, next) => {
 });
 
 // databse connection
-const connectDB = () => {
-	mongoose.connect(dbUrl, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-	});
-
-	const db = mongoose.connection;
-	db.on("error", console.error.bind(console, "connection error: "));
-
-	db.once("open", function () {
-		console.log("Database connected");
-	});
-};
-
+const { connectDB } = require("./config/database");
 connectDB();
 
 const port = 3000;
