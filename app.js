@@ -3,11 +3,30 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const { uploadCsv } = require("./controllers/upload-csv");
 const bookRoutes = require("./routes/books");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
+const dbUrl = "mongodb://localhost:27017/book_csv";
+const sessionStore = MongoStore.create({
+	mongoUrl: dbUrl,
+	collectionName: "sessions",
+});
+
+// middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+	session({
+		store: sessionStore,
+		secret: "thisismytopsecret",
+		resave: false,
+		saveUninitialized: true,
+		cookie: { maxAge: 24 * 60 * 60 * 1000 },
+	})
+);
 
 app.use("/books", bookRoutes);
 app.post("/upload-csv", upload.single("book-csv"), uploadCsv);
@@ -33,7 +52,7 @@ app.use((err, req, res, next) => {
 
 // databse connection
 const connectDB = () => {
-	mongoose.connect("mongodb://localhost:27017/book_csv", {
+	mongoose.connect(dbUrl, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	});

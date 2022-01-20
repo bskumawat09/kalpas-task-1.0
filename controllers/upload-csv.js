@@ -1,6 +1,6 @@
 const csv = require("csv-parser");
 const fs = require("fs");
-const Book = require("./models/book");
+const Book = require("../models/book");
 
 module.exports.uploadCsv = (req, res, next) => {
 	// console.log("uploaded file:", req.file);
