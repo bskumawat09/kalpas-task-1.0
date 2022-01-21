@@ -1,5 +1,9 @@
 # kalpas-task-1.0
 
+## Postman collection
+
+https://www.getpostman.com/collections/762a3dec9d37240029ee
+
 ## How to Install
 
 ### Using Git (recommended)
