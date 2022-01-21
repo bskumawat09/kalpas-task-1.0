@@ -25,7 +25,7 @@ module.exports.loginUser = (req, res) => {
 
 module.exports.logoutUser = (req, res) => {
 	req.logout();
-	res.status(201).json({
+	res.status(200).json({
 		status: "success",
 		message: "logged out",
 	});
