@@ -16,6 +16,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// databse connection
+const { connectDb } = require("./config/database");
+connectDb();
+
 // express session setup
 const sessionStore = MongoStore.create({
 	mongoUrl: process.env.DB_STRING,
@@ -69,11 +73,7 @@ app.use((err, req, res, next) => {
 	});
 });
 
-// databse connection
-const { connectDb } = require("./config/database");
-connectDb();
-
 const port = 3000;
 app.listen(port, () => {
-	console.log(`Listening on port: ${port}`);
+	console.log(`Listening on port ${port}`);
 });
