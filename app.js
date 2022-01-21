@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== "production") {
+	require("dotenv").config();
+}
 const express = require("express");
 const multer = require("multer");
 const { uploadCsv } = require("./controllers/upload");
@@ -6,7 +9,6 @@ const authRoutes = require("./routes/auth");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
-require("dotenv").config();
 const cors = require("cors");
 
 const app = express();
@@ -73,7 +75,7 @@ app.use((err, req, res, next) => {
 	});
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
 	console.log(`Listening on port ${port}`);
 });

@@ -1,25 +1,26 @@
 {
-  "name": "kalpas-task-1.0",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "connect-mongo": "^4.6.0",
-    "cors": "^2.8.5",
-    "csv-parser": "^3.0.0",
-    "dotenv": "^14.2.0",
-    "express": "^4.17.2",
-    "express-session": "^1.17.2",
-    "mongoose": "^6.1.7",
-    "multer": "^1.4.4",
-    "passport": "^0.5.2",
-    "passport-local": "^1.0.0"
-  }
+	"name": "kalpas-task-1.0",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node app.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"bcrypt": "^5.0.1",
+		"connect-mongo": "^4.6.0",
+		"cors": "^2.8.5",
+		"csv-parser": "^3.0.0",
+		"dotenv": "^14.2.0",
+		"express": "^4.17.2",
+		"express-session": "^1.17.2",
+		"mongoose": "^6.1.7",
+		"multer": "^1.4.4",
+		"passport": "^0.5.2",
+		"passport-local": "^1.0.0"
+	}
 }
