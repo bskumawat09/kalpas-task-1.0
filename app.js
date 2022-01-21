@@ -1,18 +1,20 @@
 const express = require("express");
 const multer = require("multer");
-const { uploadCsv } = require("./controllers/upload-csv");
+const { uploadCsv } = require("./controllers/upload");
 const bookRoutes = require("./routes/books");
 const authRoutes = require("./routes/auth");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
 require("dotenv").config();
+const cors = require("cors");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // express session setup
 const sessionStore = MongoStore.create({
@@ -23,7 +25,7 @@ const sessionStore = MongoStore.create({
 app.use(
 	session({
 		store: sessionStore,
-		secret: process.env.SECRET,
+		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: true,
 		cookie: { maxAge: 24 * 60 * 60 * 1000 },
@@ -45,7 +47,7 @@ app.use((req, res, next) => {
 // routes
 app.use("/books", bookRoutes);
 app.use("/auth", authRoutes);
-app.post("/upload-csv", upload.single("book-csv"), uploadCsv);
+app.post("/upload", upload.single("book-csv"), uploadCsv);
 
 // home route
 app.get("/", (req, res) => {
@@ -62,13 +64,14 @@ app.use((err, req, res, next) => {
 	res.status(400).json({
 		status: "error",
 		code: 400,
+		name: err.name,
 		message: err.message,
 	});
 });
 
 // databse connection
-const { connectDB } = require("./config/database");
-connectDB();
+const { connectDb } = require("./config/database");
+connectDb();
 
 const port = 3000;
 app.listen(port, () => {

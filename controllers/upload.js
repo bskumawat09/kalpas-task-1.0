@@ -2,6 +2,12 @@ const csv = require("csv-parser");
 const fs = require("fs");
 const Book = require("../models/book");
 
+const saveToDb = async function (data, results) {
+	const book = new Book(data);
+	await book.save();
+	results.push(row);
+};
+
 module.exports.uploadCsv = (req, res, next) => {
 	// console.log("uploaded file:", req.file);
 	try {
@@ -13,8 +19,7 @@ module.exports.uploadCsv = (req, res, next) => {
 		fs.createReadStream(req.file?.path)
 			.pipe(csv())
 			.on("data", (row) => {
-				results.push(row);
-				saveToDB(row).catch((err) => console.log("ERR:", err));
+				saveToDb(row, results).catch((err) => console.log("ERR:", err.message));
 			})
 			.on("end", () => {
 				// Parsing completed
@@ -28,9 +33,4 @@ module.exports.uploadCsv = (req, res, next) => {
 	} catch (e) {
 		next(e);
 	}
-};
-
-const saveToDB = async function (data) {
-	const book = new Book(data);
-	await book.save();
 };
